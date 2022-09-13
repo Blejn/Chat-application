@@ -1,0 +1,8 @@
+.postpage_container{
+    position: static;
+    
+    flex:1; 
+    height: calc(100vh - 60px);
+    background-color: white;
+      
+}

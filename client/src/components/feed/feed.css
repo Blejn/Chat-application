@@ -1,0 +1,16 @@
+.feed_container{
+    background-color: white;
+    padding: 20px;
+     overflow: scroll;
+    padding-top: 20px;
+    padding-left: auto;
+    padding-right: auto;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+   flex: 5;
+    height: calc(100vh - 60px);
+    
+  
+    
+}
