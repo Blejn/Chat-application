@@ -7,7 +7,6 @@ import UserProfile from "../../components/userProfile/UserProfile";
 const Profile = () => {
   return (
     <>
-      {" "}
       <Navbar />
       <div className="home_container">
         <Sidebar />

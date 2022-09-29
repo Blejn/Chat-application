@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
+import Input from "@mui/icons-material/Input";
 import TextField from "@mui/material/TextField";
 import ImageIcon from "@mui/icons-material/Image";
 import AddReactionIcon from "@mui/icons-material/AddReaction";
@@ -10,8 +11,44 @@ import { Button, makeStyles, Typography } from "@mui/material";
 import LocationOn from "@mui/icons-material/LocationOn";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useRef } from "react";
+import axios from "axios";
 
 const Share = () => {
+  const PF = process.env.REACT_APP_ASSETS_FOLDER;
+  const { user } = useContext(AuthContext);
+  const desc = useRef();
+  const [file, setFile] = useState(null);
+  const submitHandler = async e => {
+    e.preventDefault();
+    //TAK POWINNO BYC
+    const newPost = {
+      userId: user._id,
+      description: desc.current.value,
+    };
+    if (file) {
+      const data = new FormData();
+      const fileName = Date.now() + file.name;
+      data.append("name", fileName);
+      data.append("file", file);
+
+      newPost.image = fileName;
+      try {
+        await axios.post("/upload", data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    try {
+      await axios.post("/posts/createpost", newPost);
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -35,47 +72,67 @@ const Share = () => {
       >
         <Avatar
           variant="circle"
-          src="avatar1.jpg"
+          src={PF + user.avatar}
           sx={{ width: "60px", height: "60px" }}
         />
         <Typography fontSize={20} fontWeight={600}>
           Sebastian Mazur
         </Typography>
       </Stack>
-      <TextField
-        placeholder="What do you think about now..."
-        multiline
-        rows={4}
-        maxRows={6}
-        style={{ width: "100%", maxWidth: 800, color: "white" }}
-      />
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <IconButton
-          color="secondary"
-          aria-label="upload picture"
-          component="label"
-        >
-          <input hidden accept="image/*" type="file" />
-          <ImageIcon />
-        </IconButton>
+      <form onSubmit={submitHandler}>
+        <textarea
+          type={"text"}
+          placeholder={"What do you think about now..." + user.firstname + "?"}
+          multiline
+          rows={5}
+          maxRows={6}
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            color: "black",
+            height: "50px",
+          }}
+          ref={desc}
+        />
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <IconButton
+            color="secondary"
+            aria-label="upload picture"
+            component="label"
+          >
+            <input
+              hidden
+              accept="image/*"
+              type="file"
+              id="file"
+              onChange={e => setFile(e.target.files[0])}
+            />
+            <ImageIcon />
+          </IconButton>
 
-        <IconButton>
-          <AddReactionIcon sx={{ color: "#cead27" }} />
-        </IconButton>
-        <IconButton>
-          <LocationOn color="grey" />
-        </IconButton>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row-reverse",
-        }}
-      >
-        <Button color="success" variant="contained" endIcon={<SendIcon />}>
-          Send
-        </Button>
-      </Box>
+          <IconButton>
+            <AddReactionIcon sx={{ color: "#cead27" }} />
+          </IconButton>
+          <IconButton>
+            <LocationOn color="grey" />
+          </IconButton>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row-reverse",
+          }}
+        >
+          <Button
+            type="submit"
+            color="success"
+            variant="contained"
+            endIcon={<SendIcon />}
+          >
+            Send
+          </Button>
+        </Box>
+      </form>
     </Box>
   );
 };

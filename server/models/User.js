@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema(
       max: 30,
       default: "",
     },
+    country: {
+      type: String,
+      default: "",
+    },
     gender: {
       type: Number,
       enum: [1, 2, 3],
@@ -57,6 +61,10 @@ const UserSchema = new mongoose.Schema(
     followings: {
       type: Array,
       default: [],
+    },
+    relationship: {
+      type: String,
+      enum: ["single", "in love", "married", "it's complicated"],
     },
     isAdmin: {
       type: Boolean,

@@ -1,158 +1,73 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import { Avatar } from "@mui/material";
-import CardMedia from "@mui/material/CardMedia";
-
-import Container from "@mui/material/Container";
+import { useEffect } from "react";
 import "./userProfile.css";
 import Typography from "@mui/material/Typography";
-import BackgroundImage from "../../assets/zdj.jpg";
 import Post from "../post/Post";
 import CardContent from "@mui/material/CardContent";
-import Card from "@mui/material/Card";
+import { Link } from "react-router-dom";
+
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import Add from "@mui/icons-material/Add";
-const posts = [
-  {
-    id: 1,
-    description:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    username: "Ted",
-    image:
-      "https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512",
-    userId: "",
-    comments: ["super", "kozak", "pozdro"],
-    reactions: [1, 2, 3, 4],
-  },
-  {
-    id: 2,
-    description:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    username: "Ted",
-    image:
-      "https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512",
-    userId: "",
-    comments: ["super", "kozak", "pozdro"],
-    reactions: [1, 2, 3, 4, 5, 6, 7, 8],
-  },
-  {
-    id: 3,
-    description:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    username: "Ted",
-    image:
-      "https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512",
-    userId: "",
-    comments: ["super", "kozak", "pozdro", "pozdro", "pozdro", "pozdro"],
-    reactions: [1, 2],
-  },
-  {
-    id: 4,
-    description:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    username: "Ted",
-    image:
-      "https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512",
-    userId: "",
-    comments: ["super", "kozak", "pozdro"],
-    reactions: [1, 2, 3, 4, 5, 6],
-  },
-  {
-    id: 5,
-    description:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    username: "Ted",
-    image:
-      "https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512",
-    userId: "",
-    comments: ["super", "kozak", "pozdro", "pozdro", "pozdro", "pozdro"],
-    reactions: [1, 2, 3, 4, 5],
-  },
-  {
-    id: 6,
-    description:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    username: "Ted",
-    image:
-      "https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512",
-    userId: "",
-    comments: ["super", "kozak", "pozdro"],
-    reactions: [1, 2, 3, 4, 5, 6],
-  },
-  {
-    id: 7,
-    description:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    username: "Ted",
-    image:
-      "https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512",
-    userId: "",
-    comments: ["super", "kozak", "pozdro"],
-    reactions: [1, 2, 3, 4, 5, 6],
-  },
-];
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
-const friends = [
-  {
-    id: 1,
-    firstname: "Karina",
-    lastname: "Mazur",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    id: 2,
-    firstname: "Karina",
-    lastname: "Mazur",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    id: 3,
-    firstname: "Karina",
-    lastname: "Mazur",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    id: 4,
-    firstname: "Karina",
-    lastname: "Mazur",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    id: 5,
-    firstname: "Karina",
-    lastname: "Mazur",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    id: 6,
-    firstname: "Karina",
-    lastname: "Mazur",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-];
+// {
+//   id: 6,
+//   firstname: "Karina",
+//   lastname: "Mazur",
+//   img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
+// },
 
-const Friend = ({ id, firstname, lastname, img }) => {
+// FRIEND PROFILE -------------------------------------
+const Friend = ({ id, username, img }) => {
+  const PF = process.env.REACT_APP_ASSETS_FOLDER;
   return (
-    <Box key={id} sx={{ width: "100%", padding: "10px", margin: 0 }}>
-      <CardContent>
-        <img
-          style={{ maxWidth: "100%", height: "140px", borderRadius: "20px" }}
-          src={img}
-          srcSet={`${img}`}
-          alt={"elo"}
-          loading="lazy"
-        />
+    <Box
+      key={id}
+      sx={{
+        width: "100%",
+        padding: "10px",
+        margin: 0,
+        maxWidth: "100px",
+        textAlign: "center",
+      }}
+    >
+      <CardContent sx={{ textAlign: "center" }}>
+        <Link to={`/profile/${username}`}>
+          <Avatar crossorigin src={PF + img} />
+        </Link>
         <br />
         <Typography sx={{ textAlign: "center" }} component="div">
-          {firstname} {lastname}
+          {username}
         </Typography>
       </CardContent>
     </Box>
   );
 };
-const MyFriends = () => {
+// FRIENDS PROFILE -------------------------------------
+
+const MyFriends = ({ id }) => {
+  const [friends, setFriends] = useState([]);
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const res = await axios.get(`/users/followings/` + id);
+        setFriends(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchFriends();
+    console.log(friends);
+  }, [friends, id]);
+
   return (
     <Box sx={{ paddingBottom: "0px", paddingLeft: "0px" }}>
       <Typography
@@ -175,14 +90,16 @@ const MyFriends = () => {
           gridTemplateColumns: "repeat(3, 1fr)",
         }}
       >
-        {friends.map(({ id, firstname, lastname, img }) => (
-          <Friend id={id} firstname={firstname} lastname={lastname} img={img} />
+        {friends.map(({ _id, username, avatar }) => (
+          <Friend id={_id} username={username} img={avatar} />
         ))}
       </Box>
     </Box>
   );
 };
-const MyPosts = () => {
+// USER POST PROFILE -------------------------------------
+
+const MyPosts = ({ posts }) => {
   return (
     <Box
       sx={{
@@ -191,12 +108,21 @@ const MyPosts = () => {
       }}
     >
       {posts.map(
-        ({ id, description, username, image, comments, reactions }) => (
+        ({
+          _id,
+          userId,
+          description,
+          image,
+          comments,
+          reactions,
+          createdAt,
+        }) => (
           <Post
-            id={id}
+            id={_id}
+            userId={userId}
             description={description}
-            username={username}
             image={image}
+            createdAt={createdAt}
             comments={comments}
             reactions={reactions}
           />
@@ -205,7 +131,29 @@ const MyPosts = () => {
     </Box>
   );
 };
-const Info = () => {
+// Info PROFILE -------------------------------------
+
+const Info = ({
+  currentUserId,
+  currentUser,
+  username,
+  id,
+  city,
+  country,
+  relationship,
+  followers,
+}) => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const followUser = async () => {
+    try {
+      await axios.put("/" + id + "/follow", { userId: currentUser._id });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // useEffect(() => {
+  //   setIsFollowing(followers.includes(currentUserId));
+  // }, [currentUserId, followers]);
   return (
     <Box
       sx={{
@@ -213,9 +161,18 @@ const Info = () => {
       }}
     >
       <Box sx={{ minWidth: 275, paddingTop: "30px" }}>
-        <Button variant="contained" endIcon={<AddIcon />}>
-          Follow
-        </Button>
+        {currentUser !== username ? (
+          <Button
+            variant="contained"
+            color={isFollowing ? "success" : "primary"}
+            endIcon={<AddIcon />}
+            onClick={followUser}
+          >
+            {isFollowing ? "Unfollow" : "Follow"}
+          </Button>
+        ) : (
+          <div></div>
+        )}
         <CardContent sx={{ paddingBottom: "0px", paddingLeft: "0px" }}>
           <Typography
             sx={{
@@ -235,8 +192,8 @@ const Info = () => {
             color="text.secondary"
             gutterBottom
           >
-            <Typography sx={{ fontWeight: "bold" }}>City: </Typography>{" "}
-            <Typography sx={{}}>Warszawa</Typography>
+            <Typography sx={{ fontWeight: "bold" }}>City:</Typography>{" "}
+            <Typography sx={{}}>{city}</Typography>
           </Typography>
           <Typography
             sx={{ fontSize: 14, display: "flex" }}
@@ -244,7 +201,7 @@ const Info = () => {
             gutterBottom
           >
             <Typography sx={{ fontWeight: "bold" }}>Country: </Typography>{" "}
-            <Typography sx={{}}>Poland</Typography>
+            <Typography sx={{}}>{country}</Typography>
           </Typography>
           <Typography
             sx={{ fontSize: 14, display: "flex" }}
@@ -252,19 +209,47 @@ const Info = () => {
             gutterBottom
           >
             <Typography sx={{ fontWeight: "bold" }}>Relationship: </Typography>{" "}
-            <Typography sx={{}}>single</Typography>
+            <Typography sx={{}}>{relationship}</Typography>
           </Typography>
         </CardContent>
 
         <CardContent>
-          <MyFriends />
+          <MyFriends id={id} />
         </CardContent>
       </Box>
     </Box>
   );
 };
 
-const userProfile = () => {
+// USER PROFILE -------------------------------------
+const UserProfile = () => {
+  const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState([]);
+  const PF = process.env.REACT_APP_ASSETS_FOLDER;
+  const username = useParams().username;
+  const { user: currentUser } = useContext(AuthContext);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await axios.get("/posts/profile/" + username);
+
+      setPosts(
+        res.data.sort((p1, p2) => {
+          return new Date(p2.createdAt) - new Date(p1.createdAt);
+        })
+      );
+    };
+    fetchPosts();
+  }, [username]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await axios.get(`/users?username=${username}`);
+
+      setUser(res.data);
+    };
+    fetchUser();
+  }, [posts, username]);
+
   return (
     <div className="user_container">
       <React.Fragment>
@@ -282,12 +267,12 @@ const userProfile = () => {
             marginBottom: "auto",
             alignItems: "center",
             justifyContent: "center",
-            backgroundImage: `url(${BackgroundImage})`,
+            backgroundImage: `url(${PF + user.coverAvatar})`,
             backgroundSize: "cover",
           }}
         >
           <Avatar
-            src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
+            src={PF + user.avatar}
             sx={{
               position: "relative",
               marginLeft: "auto",
@@ -313,11 +298,22 @@ const userProfile = () => {
             fontWeight: "bold",
           }}
         >
-          Sebastian Mazur
+          {user.firstname}
+          <span> </span>
+          {user.lastname}
         </Typography>
         <Box sx={{ display: "flex", width: "100%", gap: "10px" }}>
-          <MyPosts />
-          <Info />
+          <MyPosts posts={posts} />
+          <Info
+            currentUserId={currentUser._id}
+            currentUser={currentUser.username}
+            username={username}
+            id={user._id}
+            city={user.city}
+            country={user.country}
+            relationship={user.relationship}
+            followers={user.followers}
+          />
         </Box>
 
         <Box sx={{ display: "flex", width: "100%" }}></Box>
@@ -326,4 +322,4 @@ const userProfile = () => {
   );
 };
 
-export default userProfile;
+export default UserProfile;

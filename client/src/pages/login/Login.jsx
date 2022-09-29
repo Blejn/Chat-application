@@ -3,11 +3,29 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
-
+import { useRef } from "react";
+import { loginCall } from "../../apiCalls";
+import "./login.css";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import CircularProgress from "@mui/material/CircularProgress";
 const Login = () => {
+  const username = useRef();
+  const password = useRef();
+  const { user, isFetching, error, dispatch } = useContext(AuthContext);
+
+  const handleClick = e => {
+    e.preventDefault();
+
+    loginCall(
+      { username: username.current.value, password: password.current.value },
+      dispatch
+    );
+  };
+
+  console.log(user);
   return (
     <div
       className="login_container"
@@ -53,6 +71,7 @@ const Login = () => {
           </Box>
 
           {/* LOGIN BOX */}
+
           <Box sx={{ width: "400px", height: "500px" }}>
             <Stack
               paddingTop={"120px"}
@@ -62,25 +81,34 @@ const Login = () => {
               justifyContent="center"
             >
               {/* INPUTS */}{" "}
-              <TextField
-                sx={{
-                  root: { borderColor: "white" },
-                  input: { color: "white" },
-                }}
-                color="info"
-                id="filled-size-normal"
-                label="Email"
-                variant="standard"
-              />
-              <TextField
-                sx={{ input: { color: "white" }, borderBottomColor: "white" }}
-                id="filled-size-normal"
-                label="Password"
-                variant="standard"
-                type={"password"}
-              />
-              <Button size="medium" variant="contained" sx={{}}>
-                Log in
+              <div className="input-container">
+                <input
+                  autoComplete="false"
+                  required
+                  ref={username}
+                  variant="standard"
+                  type={"text"}
+                />
+                <label>Username</label>
+              </div>
+              <div className="input-container">
+                <input
+                  autoComplete="false"
+                  required
+                  ref={password}
+                  variant="standard"
+                  type={"password"}
+                />
+                <label>Password</label>
+              </div>
+              <Button
+                size="medium"
+                variant="contained"
+                sx={{}}
+                onClick={handleClick}
+                disabled={isFetching}
+              >
+                {isFetching ? <CircularProgress color="inherit" /> : "Log in"}
               </Button>
               <Typography
                 variant="h6"
@@ -92,7 +120,11 @@ const Login = () => {
                 <br />
                 <Link to="/register" style={{ textDecoration: "none" }}>
                   <Button size="medium" variant="contained" sx={{}}>
-                    Sign up
+                    {isFetching ? (
+                      <CircularProgress color="inherit" />
+                    ) : (
+                      "Sign up"
+                    )}
                   </Button>
                 </Link>
               </Typography>

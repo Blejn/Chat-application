@@ -1,8 +1,11 @@
 .postpage_container{
+    margin-right: 0;
+    padding-right: 0;
     position: static;
-    
+    right: 0;
     flex:1; 
     height: calc(100vh - 60px);
     background-color: white;
+    max-width: 300px;
       
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import "./navbar.css";
-
+import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -15,10 +16,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
+import Avatar from "@mui/material/Avatar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-
+import { AuthContext } from "../../context/AuthContext";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -60,6 +62,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = () => {
+  const { user } = useContext(AuthContext);
+  const PF = process.env.REACT_APP_ASSETS_FOLDER;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   let navigate = useNavigate();
@@ -77,7 +81,7 @@ const Navbar = () => {
   };
 
   const handleMenuClose = () => {
-    navigate("/profile/:username" + location.search);
+    navigate("/profile/" + user.username + location.search);
     setAnchorEl(null);
     handleMobileMenuClose();
   };
@@ -186,7 +190,9 @@ const Navbar = () => {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            WELCOME
+            <Link to="/" style={{ textDecoration: "none" }}>
+              WELCOME
+            </Link>
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -219,14 +225,29 @@ const Navbar = () => {
             </IconButton>
             <IconButton
               size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              aria-label="show 17 new notifications"
               color="inherit"
             >
-              <AccountCircle />
+              {user.avatar ? (
+                <Avatar
+                  src={PF + user.avatar}
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                  sx={{
+                    position: "relative",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    marginTop: "auto",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    width: 30,
+                    height: 30,
+                  }}
+                ></Avatar>
+              ) : (
+                <Avatar></Avatar>
+              )}
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>

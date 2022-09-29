@@ -76,23 +76,43 @@ router.get("/:id", async (req,res)=>{
         res.status(500).json(error);
     }
 })
-//all posts
+//all posts from user 
 
-router.get("/timeline/all", async (req,res)=>{
-    let posts = [];
+router.get("/timeline/:userId", async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.params.userId);
+    const userPosts = await Post.find({ userId: currentUser.id });
+
+    const friendPosts = await Promise.all(
+      currentUser.followings.map(friendId => {
+        return Post.find({ userId: friendId });
+      })
+    );
+    res.status(200).json(userPosts.concat(...friendPosts));
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//all user's posts
+router.get("/profile/:username" , async (req,res)=>{
     try{
-        const currentUser = await User.findById(req.body.userId);
-        const userPosts = await Post.find({userId: currentUser.id})
-
-        const friendPosts = await Promise.all(
-            currentUser.followings.map(friendId=>{
-               return  Post.find({userId: friendId});
-            })
-        );
-        res.json(userPosts.concat(...friendPosts));
-
-    }catch(error){
+        const user =  await User.findOne({username: req.params.username})
+const posts = await Post.find({userId:user._id});
+res.status(200).json(posts);
+    }
+    catch(error){
         res.status(500).json(error);
     }
-})
+});
+
+// all posts
+router.get("/profile/all", async (req, res) => {
+  try {
+    const all = await Post.find({});
+    res.status(200).json(all);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 module.exports=router;

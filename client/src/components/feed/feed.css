@@ -10,6 +10,7 @@
     align-items: center;
    flex: 5;
     height: calc(100vh - 60px);
+    min-width: 1000px;
     
   
     

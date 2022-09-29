@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -7,12 +7,18 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { Box, Stack } from "@mui/system";
-import { Avatar } from "@mui/material";
+import { format } from "timeago.js";
+
 import CommentIcon from "@mui/icons-material/Comment";
 import IconButton from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Skeleton from "@mui/material/Skeleton";
-import { useState } from "react";
+import axios from "axios";
+import { Avatar } from "@mui/material";
+import { create } from "@mui/material/styles/createTransitions";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Image = styled("img")({
   width: "100%",
@@ -20,28 +26,42 @@ const Image = styled("img")({
 const Post = ({
   id,
   description,
-  username,
   image,
+  createdAt,
   userId,
   comments,
   reactions,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
-
-  const color = "";
-  const [reaction, setReaction] = useState(reactions);
+  const PF = process.env.REACT_APP_ASSETS_FOLDER;
+  const [user, setUser] = useState({});
+  const { user: currentUser } = useContext(AuthContext);
+  const [reaction, setReaction] = useState(reactions.length);
   const [isReaction, setIsReaction] = useState(false);
 
   const reactionHandler = () => {
-    isReaction ? reactions.pop(username) : reaction.push(username);
-
-    setIsReaction(!isReaction);
+    try {
+      axios.put("posts/" + id + "/reaction", { userId: currentUser._id });
+      setReaction(!isReaction ? reaction + 1 : reaction - 1);
+      setIsReaction(!isReaction);
+    } catch (error) {}
   };
+  useEffect(() => {
+    setIsReaction(reactions.includes(currentUser._id));
+  }, [currentUser._id, reactions]);
 
   const openHandler = () => {
     setOpen(!open);
   };
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await axios.get(`/users?userId=${userId}`);
+
+      setUser(res.data);
+    };
+    fetchUser();
+  }, [userId]);
 
   return (
     <Card
@@ -61,19 +81,35 @@ const Post = ({
             <Box sx={{ margin: 1 }}>
               {loading ? (
                 <Skeleton variant="circular">
-                  <Avatar />
+                  <Link to={`/profile/${user.username}`}>
+                    <Avatar crossorigin src={PF + user.avatar} />
+                  </Link>
                 </Skeleton>
               ) : (
-                <Avatar src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg" />
+                <Link to={`/profile/${user.username}`}>
+                  <Avatar crossorigin src={PF + user.avatar} />
+                </Link>
               )}
             </Box>
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{ width: "100%", display: "flex" }}>
               {loading ? (
                 <Skeleton width="100%">
-                  <Typography>.</Typography>
+                  <Link to={`/profile/${user.username}`}>
+                    <Typography>.</Typography>
+                  </Link>
                 </Skeleton>
               ) : (
-                <Typography>{username}</Typography>
+                <Typography>
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to={`/profile/${user.username}`}
+                  >
+                    {user.username}
+                  </Link>
+                  <small style={{ marginLeft: "600px" }}>
+                    {format(createdAt)}
+                  </small>
+                </Typography>
               )}
             </Box>
           </Box>
@@ -84,7 +120,7 @@ const Post = ({
           ) : (
             <Image
               // src="https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512"
-              src={image}
+              src={PF + image}
               alt=""
             />
           )}
@@ -103,7 +139,7 @@ const Post = ({
         >
           <FavoriteIcon />
           <small style={{ fontSize: 12, marginLeft: 10 }}>
-            {reactions.length} people like it
+            {reaction} people like it
           </small>
         </IconButton>
 
