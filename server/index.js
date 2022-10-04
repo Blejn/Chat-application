@@ -7,6 +7,8 @@ const morgan=require("morgan");
 const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts")
  const authRoute = require("./routes/auth");
+ const conversationRoute = require("./routes/conversations");
+ const messageRoute = require("./routes/messages");
  const cors = require("cors");
  const multer = require("multer");
  const path = require("path");
@@ -33,6 +35,8 @@ const postRoute = require("./routes/posts")
  app.use("/api/users", userRoute);
  app.use("/api/auth", authRoute);
  app.use("/api/posts", postRoute);
+ app.use("/api/conversations", conversationRoute);
+ app.use("/api/messages", messageRoute);
  app.use(morgan("common"));
  app.use("/images", express.static(path.join(__dirname, "public/images")));
 

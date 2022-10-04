@@ -48,27 +48,27 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const Users = ({ id, primary, username, person, status }) => {
+const Users = ({ id, username, avatar }) => {
   return (
     <div>
-      {status ? (
-        <React.Fragment key={id}>
-          <ListItem button>
-            <ListItemAvatar>
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-              >
-                <Avatar alt="Remy Sharp" src={person} />
-              </StyledBadge>
-            </ListItemAvatar>
-            <ListItemText primary={primary} secondary={username} />
-          </ListItem>
-        </React.Fragment>
-      ) : (
-        <></>
-      )}
+      <React.Fragment key={id}>
+        <ListItem button>
+          <ListItemAvatar>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              variant="dot"
+            >
+              {avatar ? (
+                <Avatar alt="Remy Sharp" src={avatar} />
+              ) : (
+                <Avatar alt="Remy Sharp" />
+              )}
+            </StyledBadge>
+          </ListItemAvatar>
+          <ListItemText secondary={username} />
+        </ListItem>
+      </React.Fragment>
     </div>
   );
 };

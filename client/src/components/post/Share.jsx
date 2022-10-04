@@ -6,6 +6,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import AddReactionIcon from "@mui/icons-material/AddReaction";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
+import CancelIcon from "@mui/icons-material/Cancel";
 import Card from "@mui/material/Card";
 import { Button, makeStyles, Typography } from "@mui/material";
 import LocationOn from "@mui/icons-material/LocationOn";
@@ -54,7 +55,6 @@ const Share = () => {
       sx={{
         maxWidth: 800,
 
-        height: 300,
         color: "#807c7c",
         background: "white",
         padding: 2,
@@ -64,6 +64,7 @@ const Share = () => {
         alignItems: "center",
         marginLeft: "auto",
         marginRight: "auto",
+        marginBottom: "10px",
       }}
     >
       <Stack
@@ -94,6 +95,31 @@ const Share = () => {
           }}
           ref={desc}
         />
+        {file && (
+          <Box
+            sx={{
+              display: "flex",
+              maxWidth: "300px",
+              maxHeight: "200px",
+              padding: "0 20px 10px 20px",
+              position: "relative",
+              alignItems: "center",
+            }}
+          >
+            <img
+              style={{
+                width: "100%",
+                objectFit: "cover",
+              }}
+              src={URL.createObjectURL(file)}
+            />
+            <CancelIcon
+              onClick={() => {
+                setFile(null);
+              }}
+            />
+          </Box>
+        )}
         <Box sx={{ display: "flex", flexDirection: "row" }}>
           <IconButton
             color="secondary"
@@ -117,6 +143,7 @@ const Share = () => {
             <LocationOn color="grey" />
           </IconButton>
         </Box>
+
         <Box
           sx={{
             display: "flex",

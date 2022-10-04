@@ -1,4 +1,5 @@
 import React from "react";
+import ChatIcon from "@mui/icons-material/Chat";
 import "./navbar.css";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
@@ -190,7 +191,7 @@ const Navbar = () => {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            <Link to="/" style={{ textDecoration: "none" }}>
+            <Link to="/" style={{ textDecoration: "none", color: "white" }}>
               WELCOME
             </Link>
           </Typography>
@@ -212,6 +213,24 @@ const Navbar = () => {
             >
               <Badge badgeContent={5} color="error">
                 <MailIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              sx={{ paddingBottom: "0px" }}
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+            >
+              <Badge badgeContent={9} color="error">
+                <Link
+                  to={"/chat"}
+                  style={{
+                    textDecoration: "none",
+                    color: "white",
+                  }}
+                >
+                  <ChatIcon sx={{ paddingBottom: "0px" }} />
+                </Link>
               </Badge>
             </IconButton>
             <IconButton

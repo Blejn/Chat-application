@@ -1,0 +1,12 @@
+.chat_container{
+   
+     height: calc(100vh -70px ) !important;
+    position: absolute;
+  bottom: 0;
+  left: 0;
+    display: flex;
+    width: 100%;
+
+   
+
+}

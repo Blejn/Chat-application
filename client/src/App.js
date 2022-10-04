@@ -5,6 +5,7 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
+import Chat from "../src/pages/chat/Chat";
 function App() {
   const { user } = useContext(AuthContext);
   return (
@@ -21,6 +22,10 @@ function App() {
           <Route
             path="/register"
             element={user ? <Navigate to="/" /> : <Register />}
+          />
+          <Route
+            path="/chat"
+            element={!user ? <Navigate to="/" /> : <Chat />}
           />
         </Routes>
       </BrowserRouter>

@@ -134,7 +134,6 @@ const MyPosts = ({ posts }) => {
 // Info PROFILE -------------------------------------
 
 const Info = ({
-  currentUserId,
   currentUser,
   username,
   id,
@@ -143,17 +142,26 @@ const Info = ({
   relationship,
   followers,
 }) => {
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(
+    currentUser.followings.includes(id)
+  );
   const followUser = async () => {
     try {
-      await axios.put("/" + id + "/follow", { userId: currentUser._id });
+      !isFollowing
+        ? await axios.put("/users/" + id + "/follow", {
+            userId: currentUser._id,
+          })
+        : await axios.put("/users/" + id + "/unfollow", {
+            userId: currentUser._id,
+          });
     } catch (error) {
       console.log(error);
     }
+    setIsFollowing(!isFollowing);
   };
-  // useEffect(() => {
-  //   setIsFollowing(followers.includes(currentUserId));
-  // }, [currentUserId, followers]);
+  useEffect(() => {
+    setIsFollowing(currentUser.followings.includes(id));
+  }, [currentUser.followings, id]);
   return (
     <Box
       sx={{
@@ -161,10 +169,10 @@ const Info = ({
       }}
     >
       <Box sx={{ minWidth: 275, paddingTop: "30px" }}>
-        {currentUser !== username ? (
+        {currentUser.username !== username ? (
           <Button
             variant="contained"
-            color={isFollowing ? "success" : "primary"}
+            color={isFollowing ? "error" : "primary"}
             endIcon={<AddIcon />}
             onClick={followUser}
           >
@@ -305,8 +313,7 @@ const UserProfile = () => {
         <Box sx={{ display: "flex", width: "100%", gap: "10px" }}>
           <MyPosts posts={posts} />
           <Info
-            currentUserId={currentUser._id}
-            currentUser={currentUser.username}
+            currentUser={currentUser}
             username={username}
             id={user._id}
             city={user.city}

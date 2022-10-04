@@ -37,7 +37,9 @@ const Feed = ({ username }) => {
   return (
     <div style={{ overflow: "hidden" }}>
       <div className="feed_container">
-        <Share />
+        <div style={{ position: "relative" }}>
+          <Share />
+        </div>
         {posts.map(
           ({
             _id,
