@@ -77,7 +77,7 @@ const Share = () => {
           sx={{ width: "60px", height: "60px" }}
         />
         <Typography fontSize={20} fontWeight={600}>
-          Sebastian Mazur
+          {user.firstname} {user.lastname}
         </Typography>
       </Stack>
       <form onSubmit={submitHandler}>

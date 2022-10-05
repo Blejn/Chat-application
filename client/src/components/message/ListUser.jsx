@@ -25,7 +25,6 @@ const ListUser = ({ user, persons, id }) => {
         console.log(err);
       }
     };
-    console.log(infoUser);
     getUser();
   }, [user._id, persons]);
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import "./chat.css";
 import List from "@mui/material/List";
 
@@ -15,14 +15,29 @@ import Navbar from "../navbar/Navbar";
 import UsersPage from "../../components/userspage/UsersPage";
 import FormControl, { useFormControl } from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
-
+import { io } from "socket.io-client";
 const Chat = () => {
   const PF = process.env.REACT_APP_ASSETS_FOLDER;
   const [currentChat, setCurrentChat] = useState(null);
   const [open, setOpen] = React.useState(true);
+  const socket = useRef();
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const [conversations, setConversations] = useState([]);
   const { user } = useContext(AuthContext);
+  //SOCKET
+  useEffect(() => {
+    socket.current = io("ws://localhost:8900");
+  }, []);
 
+  useEffect(() => {
+    socket.current.emit("addUser", user._id);
+    socket.current.on("getUsers", users => {
+      setOnlineUsers(
+        user.followings.filter(f => users.some(u => u.userId === f))
+      );
+      console.log(users);
+    });
+  }, [user]);
   // FETCHING CONVERSATIONS FROM DATABASE
   useEffect(() => {
     const fetchConversations = async () => {
@@ -33,10 +48,9 @@ const Chat = () => {
         console.log(error);
       }
     };
+
     fetchConversations();
   }, [user._id]);
-
-  console.log(currentChat);
 
   const handleClick = () => {
     setOpen(!open);
@@ -83,6 +97,7 @@ const Chat = () => {
               currentChat={currentChat}
               persons={currentChat != null ? currentChat.persons : null}
               user={user}
+              socket={socket}
             />
           ) : (
             <> NO CONVERSATION SELECTED</>
@@ -91,7 +106,10 @@ const Chat = () => {
 
         {/* ACTIVE USERS */}
         <div style={{ flex: 1.5 }}>
-          <UsersPage />
+          <UsersPage
+            setCurrentChat={setCurrentChat}
+            onlineUsers={onlineUsers}
+          />
         </div>
       </div>
     </>

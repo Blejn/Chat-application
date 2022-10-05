@@ -13,9 +13,28 @@ import SendIcon from "@mui/icons-material/Send";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
 import { format } from "timeago.js";
-export const Conversation = ({ currentChat, persons, user }) => {
+import { useRef } from "react";
+export const Conversation = ({ currentChat, persons, user, socket }) => {
   const [chatUser, setChatUser] = useState({});
   const [messages, setMessages] = useState([]);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
+  const scrollRef = useRef();
+  useEffect(() => {
+    socket.current.on("getMessage", data => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, [arrivalMessage, socket]);
+
+  useEffect(() => {
+    arrivalMessage &&
+      currentChat?.persons.includes(arrivalMessage.sender) &&
+      setMessages(prev => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -42,6 +61,31 @@ export const Conversation = ({ currentChat, persons, user }) => {
     getMessages();
   }, [currentChat._id, messages]);
   const PF = process.env.REACT_APP_ASSETS_FOLDER;
+
+  const handlerSubmit = async () => {
+    const userMessage = {
+      sender: user._id,
+      text: newMessage,
+      conversationId: currentChat._id,
+    };
+    const receiverId = persons.find(receiver => receiver !== user._id);
+    socket.current.emit("sendMessage", {
+      senderId: user._id,
+      receiverId,
+      text: newMessage,
+    });
+    try {
+      const res = await axios.post("/messages", userMessage);
+      setMessages([...messages, res.data]);
+      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+
+      setNewMessage("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+
   return (
     <>
       <Box
@@ -84,8 +128,8 @@ export const Conversation = ({ currentChat, persons, user }) => {
         <Grid item xs={9}>
           <Box style={{ maxHeight: "500px", overflow: "auto" }}>
             <List sx={{ height: "60vh", overflowY: "auto" }}>
-              {messages ? (
-                messages.map(message => (
+              {messages.map(message => (
+                <div ref={scrollRef}>
                   <ListItem key={message._id}>
                     <Grid container>
                       <Grid item xs={12}>
@@ -118,16 +162,14 @@ export const Conversation = ({ currentChat, persons, user }) => {
                         <Grid item xs={12}>
                           <ListItemText
                             align="right"
-                            secondary="10:30"
+                            secondary={format(message.createdAt)}
                           ></ListItemText>
                         </Grid>
                       </Grid>
                     </Grid>
                   </ListItem>
-                ))
-              ) : (
-                <span>no messages with this user</span>
-              )}
+                </div>
+              ))}
             </List>
             <Divider />
           </Box>
@@ -137,10 +179,17 @@ export const Conversation = ({ currentChat, persons, user }) => {
                 id="outlined-basic-email"
                 label="Type Something"
                 fullWidth
+                onChange={e => setNewMessage(e.target.value)}
+                value={newMessage}
               />
             </Grid>
             <Grid xs={1} align="right">
-              <Fab color="primary" aria-label="add">
+              <Fab
+                onClick={handlerSubmit}
+                sx={{}}
+                color="primary"
+                aria-label="add"
+              >
                 <SendIcon />
               </Fab>
             </Grid>
