@@ -58,10 +58,15 @@ const postRoute = require("./routes/posts")
    }
  });
 
+// app.use(express.static(path.join(__dirname,"/client")))
+
+  app.get('*',(req,res)=>{
+   res.sendFile(path.join(__dirname,'/client/build','index.html'));
+  });
 
 
 //APP LISTEN
-app.listen(3500,()=>{
+app.listen(process.env.PORT||3500,()=>{
     console.log("SERVER RUNNING!");
 })
 
