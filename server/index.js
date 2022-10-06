@@ -14,6 +14,7 @@ const postRoute = require("./routes/posts")
  const path = require("path");
  dotenv.config();
 
+
  //CONNECT DO MONGO
  mongoose.connect(
    process.env.MONGO_URL,
@@ -58,11 +59,11 @@ const postRoute = require("./routes/posts")
    }
  });
 
-// app.use(express.static(path.join(__dirname,"/client")))
+app.use(express.static(path.join(__dirname, "/client/build")));
 
-  app.get('*',(req,res)=>{
-   res.sendFile(path.join(__dirname,'/client/build','index.html'));
-  });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
 
 
 //APP LISTEN
