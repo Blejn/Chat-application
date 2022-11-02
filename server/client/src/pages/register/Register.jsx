@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -14,7 +14,22 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./register.css";
 import { axiosInstance } from "../../config";
+import { useEffect } from "react";
+
 const Register = () => {
+  const [allUsers, setAllUsers] = useState([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axiosInstance.get("/users/usersList");
+        setAllUsers(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUsers();
+  }, [allUsers]);
+
   const navigate = useNavigate();
   const email = useRef();
   const username = useRef();
@@ -23,25 +38,48 @@ const Register = () => {
   const password = useRef();
   const repeatPassword = useRef();
   const notify = () => toast("Password doesn't match");
-  const notifyUser = () =>
+  const notifyUser = () => {
     toast("Ups something gone wrong..., Can't create account");
+  };
+
+  const notifyUsername = () => {
+    toast("username already exist");
+  };
+  const usernames = allUsers.map(user => {
+    return user.username;
+  });
+
   const registerHandler = async e => {
     e.preventDefault();
-    if (repeatPassword.current.value !== password.current.vaue) {
+    if (repeatPassword.current.value !== password.current.value) {
       notify();
     }
-    const user = {
-      username: username.current.value,
-      email: email.current.value,
-      firstname: firstname.current.value,
-      lastname: lastname.current.value,
-      password: password.current.value,
-    };
-    try {
-      await axiosInstance.post("/auth/register", user);
-      navigate.push("/login");
-    } catch (error) {
-      notifyUser();
+    if (usernames.includes(username.current.value)) {
+      notifyUsername();
+    }
+    if (
+      repeatPassword.current.value === password.current.value &&
+      !usernames.includes(username.current.value) &&
+      email.current.value !== "" &&
+      firstname.current.value !== "" &&
+      lastname.current.value !== "" &&
+      password.current.value !== ""
+    ) {
+      const user = {
+        username: username.current.value,
+        email: email.current.value,
+        firstname: firstname.current.value,
+        lastname: lastname.current.value,
+        password: password.current.value,
+      };
+      try {
+        await axiosInstance.post("/auth/register", user);
+        navigate("/login");
+      } catch (error) {
+        notifyUser();
+      }
+    } else {
+      notify();
     }
   };
   return (

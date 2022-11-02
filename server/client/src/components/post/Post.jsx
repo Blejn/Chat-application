@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
+import TextField from "@mui/material/TextField";
+import SendIcon from "@mui/icons-material/Send";
+
+import Grid from "@mui/material/Grid";
+import Fab from "@mui/material/Fab";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import { Box, Stack } from "@mui/system";
+import { Box } from "@mui/system";
 import { format } from "timeago.js";
-
+import { Comment } from "./Comment";
 import CommentIcon from "@mui/icons-material/Comment";
 import IconButton from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Skeleton from "@mui/material/Skeleton";
-import axios from "axios";
 import { Avatar } from "@mui/material";
-import { create } from "@mui/material/styles/createTransitions";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { axiosInstance } from "../../config";
+import axios from "axios";
+import { useRef } from "react";
 const Image = styled("img")({
   width: "100%",
 });
@@ -32,14 +36,30 @@ const Post = ({
   comments,
   reactions,
 }) => {
+  const com = useRef();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
   const PF = process.env.REACT_APP_ASSETS_FOLDER;
   const [user, setUser] = useState({});
+  const [text, setText] = useState("FOLLOW USER");
   const { user: currentUser } = useContext(AuthContext);
   const [reaction, setReaction] = useState(reactions.length);
   const [isReaction, setIsReaction] = useState(false);
-
+  const [isFollowing, setIsFollowing] = useState(
+    currentUser.followings.includes(user?._id)
+  );
+  const [newComment, setNewComment] = useState("");
+  const followHandler = async () => {
+    try {
+      await axiosInstance.put("/users/" + user._id + "/follow", {
+        userId: currentUser._id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    setText("NOW YOU FOLLOW THIS USER!");
+  };
   const reactionHandler = () => {
     try {
       axiosInstance.put("posts/" + id + "/reaction", {
@@ -53,6 +73,18 @@ const Post = ({
     setIsReaction(reactions.includes(currentUser._id));
   }, [currentUser._id, reactions]);
 
+  const handlerSubmit = async e => {
+    const newComment = {
+      userId: currentUser._id,
+      text: com.current.value,
+      postId: id,
+    };
+    try {
+      await axiosInstance.put("/posts/" + id + "/comment", newComment);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const openHandler = () => {
     setOpen(!open);
   };
@@ -65,6 +97,10 @@ const Post = ({
     fetchUser();
   }, [userId]);
 
+  console.log(comments);
+  const commentSection = () => {
+    setOpenComment(!openComment);
+  };
   return (
     <Card
       key={id}
@@ -75,6 +111,7 @@ const Post = ({
         alignItems: "center",
         marginLeft: "auto",
         marginRight: "auto",
+        transform: "all 0.5s",
       }}
     >
       <CardContent>
@@ -93,6 +130,7 @@ const Post = ({
                 </Link>
               )}
             </Box>
+
             <Box sx={{ width: "100%", display: "flex" }}>
               {loading ? (
                 <Skeleton width="100%">
@@ -120,11 +158,7 @@ const Post = ({
               <div style={{ paddingTop: "57%" }} />
             </Skeleton>
           ) : (
-            <Image
-              // src="https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512"
-              src={PF + image}
-              alt=""
-            />
+            <Image src={PF + image} alt="" />
           )}
         </div>
 
@@ -151,11 +185,53 @@ const Post = ({
           component="label"
         >
           <CommentIcon />
-          <small style={{ fontSize: 12, marginLeft: 10 }}>
-            {comments.length}people comments
+          <small
+            style={{ fontSize: 12, marginLeft: 10 }}
+            onClick={commentSection}
+          >
+            {comments.length} people comments
           </small>
         </IconButton>
+        {currentUser.followings.some(id => id === user?._id) ||
+        currentUser._id === userId ? (
+          <></>
+        ) : (
+          <Button onClick={{ followHandler }} sx={{ marginLeft: "20px" }}>
+            {text}
+          </Button>
+        )}
       </CardActions>
+      {openComment ? (
+        <Box>
+          <Grid container style={{ verticalAlign: "middle", padding: "20px" }}>
+            <Grid item xs={11}>
+              <TextField
+                inputRef={com}
+                id="outlined-basic-email"
+                margin="normal"
+                fullWidth
+                label="Add comment..."
+                onChange={""}
+              />
+            </Grid>
+            <Grid xs={1} align="right">
+              <Fab
+                onClick={handlerSubmit}
+                sx={{ marginTop: "15px" }}
+                color="primary"
+                aria-label="add"
+              >
+                <SendIcon />
+              </Fab>
+            </Grid>
+          </Grid>
+          {comments?.map(comment => {
+            return <Comment comment={comment} />;
+          })}
+        </Box>
+      ) : (
+        <></>
+      )}
     </Card>
   );
 };

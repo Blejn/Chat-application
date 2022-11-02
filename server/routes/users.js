@@ -128,7 +128,18 @@ router.put("/:id/follow", async (req, res) => {
     res.status(403).json("you can't follow yourself");
 }
 });
-//Create post
+//ALL USERS
+router.get("/usersList", function (req, res) {
+  try {
+    User.find({}).then(function (users) {
+      res.status(200).json(users);
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+
 
 
 

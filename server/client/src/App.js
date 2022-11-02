@@ -6,6 +6,7 @@ import Register from "./pages/register/Register";
 import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
 import Chat from "./pages/chat/Chat";
+import "./App.css";
 function App() {
   const { user } = useContext(AuthContext);
   return (

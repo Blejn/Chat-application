@@ -1,7 +1,9 @@
 .sidebar_container{
-    flex:1;
+    width: 25vw;
     background-color: white;
     max-width: 300px;
+    padding-top: 50px;
+    
  
     
 }

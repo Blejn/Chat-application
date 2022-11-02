@@ -12,6 +12,7 @@ import SendIcon from "@mui/icons-material/Send";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
+import { Link } from "react-router-dom";
 import ListItem from "@mui/material/ListItem";
 import GroupIcon from "@mui/icons-material/Group";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
@@ -51,28 +52,29 @@ const Sidebar = () => {
           <ListItemIcon>
             <GroupIcon />
           </ListItemIcon>
-          <ListItemText primary="Groups" />
-        </ListItemButton>
-
-        <ListItemButton>
-          <ListItemIcon>
-            <PlayCircleFilledIcon />
-          </ListItemIcon>
-          <ListItemText primary="Videos" />
-        </ListItemButton>
-
-        <ListItemButton>
-          <ListItemIcon>
-            <AllInboxIcon />
-          </ListItemIcon>
           <ListItemText primary="Posts" />
         </ListItemButton>
+        <Link
+          to={"/chat"}
+          style={{
+            textDecoration: "none",
+            color: "black",
+          }}
+        >
+          <ListItemButton>
+            <ListItemIcon>
+              <ChatIcon />
+            </ListItemIcon>
+
+            <ListItemText primary="Chat" />
+          </ListItemButton>
+        </Link>
 
         <ListItemButton onClick={handleClick}>
           <ListItemIcon>
-            <ChatIcon />
+            <AllInboxIcon />
           </ListItemIcon>
-          <ListItemText primary="Chat" />
+          <ListItemText primary="News" />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
 

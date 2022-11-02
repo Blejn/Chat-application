@@ -10,7 +10,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Fab from "@mui/material/Fab";
 import SendIcon from "@mui/icons-material/Send";
-import Paper from "@mui/material/Paper";
 import axios from "axios";
 import { format } from "timeago.js";
 import { useRef } from "react";
@@ -55,6 +54,7 @@ export const Conversation = ({ currentChat, persons, user, socket }) => {
       try {
         const res = await axiosInstance.get("/messages/" + currentChat?._id);
         setMessages(res.data);
+        scrollRef.current?.scrollIntoView({ behavior: "smooth" });
       } catch (error) {
         console.log(error);
       }
@@ -85,7 +85,6 @@ export const Conversation = ({ currentChat, persons, user, socket }) => {
       console.log(error);
     }
   };
-  scrollRef.current?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <>

@@ -1,4 +1,4 @@
 import axios from "axios";
 export const axiosInstance = axios.create({
-  baseURL: "https://blejn-blogchat.herokuapp.com/api/",
+  baseURL: "http://localhost:3500/api/",
 });

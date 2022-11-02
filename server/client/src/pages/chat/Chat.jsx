@@ -27,7 +27,7 @@ const Chat = () => {
   const { user } = useContext(AuthContext);
   //SOCKET
   useEffect(() => {
-    socket.current = io("ws://localhost:8900");
+    socket.current = io("https://blejn-socket-chat.herokuapp.com");
   }, []);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const Chat = () => {
     <>
       <Navbar />
       <div className="chat_container">
-        <div style={{ flex: 2.5 }}>
+        <div style={{ flex: 2.5, paddingTop: "60px" }}>
           {/* USERS WITH WHO YOU CHAT */}
           <Box component="form" noValidate autoComplete="off">
             <FormControl sx={{ width: "25ch", padding: "5px", margin: "5px" }}>
@@ -92,7 +92,7 @@ const Chat = () => {
         </div>
 
         {/* CHAT BLOCK */}
-        <div style={{ flex: 6.5 }}>
+        <div style={{ flex: 6.5, paddingTop: "60px" }}>
           {currentChat !== null ? (
             <Conversation
               currentChat={currentChat}

@@ -81,84 +81,103 @@ const Share = () => {
         </Typography>
       </Stack>
       <form onSubmit={submitHandler}>
-        <textarea
-          type={"text"}
-          placeholder={"What do you think about now..." + user.firstname + "?"}
-          multiline
-          rows={5}
-          maxRows={6}
-          style={{
-            width: "100%",
-            maxWidth: 800,
-            color: "black",
-            height: "50px",
-          }}
-          ref={desc}
-        />
-        {file && (
+        <div style={{ position: "relative" }}>
+          <TextField
+            type={"text"}
+            placeholder={
+              "What do you think about now..." + user.firstname + "?"
+            }
+            multiline
+            rows={4}
+            maxRows={6}
+            sx={{
+              width: "100%",
+              maxWidth: 800,
+              color: "black",
+            }}
+            inputRef={desc}
+          />
+        </div>
+        <div style={{ position: "relative" }}>
+          {file && (
+            <Box
+              sx={{
+                display: "flex",
+                maxWidth: "300px",
+                maxHeight: "200px",
+                padding: "0 20px 10px 20px",
+                position: "relative",
+                alignItems: "center",
+              }}
+            >
+              <img
+                style={{
+                  width: "100%",
+                  objectFit: "cover",
+                }}
+                src={URL.createObjectURL(file)}
+              />
+              <CancelIcon
+                onClick={() => {
+                  setFile(null);
+                }}
+              />
+            </Box>
+          )}
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <IconButton
+              color="secondary"
+              aria-label="upload picture"
+              component="label"
+            >
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                id="file"
+                onChange={e => setFile(e.target.files[0])}
+              />
+              <ImageIcon />
+              <Typography marginLeft={1} fontSize={15} fontWeight={300}>
+                Image
+              </Typography>
+            </IconButton>
+
+            <IconButton>
+              <AddReactionIcon sx={{ color: "#cead27" }} />
+              <Typography
+                color={"#cead27"}
+                marginLeft={1}
+                fontSize={15}
+                fontWeight={300}
+              >
+                Emoji
+              </Typography>
+            </IconButton>
+            <IconButton>
+              <LocationOn color="grey" />
+              <Typography marginLeft={1} fontSize={15} fontWeight={300}>
+                Localization
+              </Typography>
+            </IconButton>
+          </Box>
+
           <Box
             sx={{
               display: "flex",
-              maxWidth: "300px",
-              maxHeight: "200px",
-              padding: "0 20px 10px 20px",
-              position: "relative",
-              alignItems: "center",
+              flexDirection: "row-reverse",
             }}
           >
-            <img
-              style={{
-                width: "100%",
-                objectFit: "cover",
-              }}
-              src={URL.createObjectURL(file)}
-            />
-            <CancelIcon
-              onClick={() => {
-                setFile(null);
-              }}
-            />
+            <Button
+              type="submit"
+              color="success"
+              variant="contained"
+              endIcon={<SendIcon />}
+            >
+              Send
+            </Button>
           </Box>
-        )}
-        <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <IconButton
-            color="secondary"
-            aria-label="upload picture"
-            component="label"
-          >
-            <input
-              hidden
-              accept="image/*"
-              type="file"
-              id="file"
-              onChange={e => setFile(e.target.files[0])}
-            />
-            <ImageIcon />
-          </IconButton>
-
-          <IconButton>
-            <AddReactionIcon sx={{ color: "#cead27" }} />
-          </IconButton>
-          <IconButton>
-            <LocationOn color="grey" />
-          </IconButton>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row-reverse",
-          }}
-        >
-          <Button
-            type="submit"
-            color="success"
-            variant="contained"
-            endIcon={<SendIcon />}
-          >
-            Send
-          </Button>
-        </Box>
+        </div>
       </form>
     </Box>
   );
