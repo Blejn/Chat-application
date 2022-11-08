@@ -65,7 +65,6 @@ const MyFriends = ({ id }) => {
     };
 
     fetchFriends();
-    console.log(friends);
   }, [friends, id]);
 
   return (

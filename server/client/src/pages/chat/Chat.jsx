@@ -36,7 +36,6 @@ const Chat = () => {
       setOnlineUsers(
         user.followings.filter(f => users.some(u => u.userId === f))
       );
-      console.log(users);
     });
   }, [user]);
   // FETCHING CONVERSATIONS FROM DATABASE

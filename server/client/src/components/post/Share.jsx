@@ -89,7 +89,6 @@ const Share = () => {
             }
             multiline
             rows={4}
-            maxRows={6}
             sx={{
               width: "100%",
               maxWidth: 800,

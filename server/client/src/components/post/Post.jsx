@@ -97,7 +97,6 @@ const Post = ({
     fetchUser();
   }, [userId]);
 
-  console.log(comments);
   const commentSection = () => {
     setOpenComment(!openComment);
   };
@@ -146,7 +145,8 @@ const Post = ({
                   >
                     {user.username}
                   </Link>
-                  <small style={{ marginLeft: "600px" }}>
+                  <br />
+                  <small style={{ position: "relative", right: 0 }}>
                     {format(createdAt)}
                   </small>
                 </Typography>

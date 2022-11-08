@@ -12,7 +12,7 @@ import axios from "axios";
 import UsersOffline from "../post/UsersOffline";
 import { axiosInstance } from "../../config";
 const UsersPage = ({ setCurrentChat, onlineUsers }) => {
-  console.log(onlineUsers);
+
   const [friends, setFriends] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
   const [offlineFriends, setOfflineFriends] = useState([]);
@@ -33,7 +33,7 @@ const UsersPage = ({ setCurrentChat, onlineUsers }) => {
   useEffect(() => {
     setOnlineFriends(friends.filter(f => onlineUsers?.includes(f._id)));
   }, [onlineUsers, friends]);
-  console.log(onlineUsers);
+
 
   useEffect(() => {
     setOfflineFriends(friends.filter(f => !onlineUsers?.includes(f._id)));

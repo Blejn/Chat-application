@@ -12,7 +12,7 @@ import SendIcon from "@mui/icons-material/Send";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ListItem from "@mui/material/ListItem";
 import GroupIcon from "@mui/icons-material/Group";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
@@ -28,7 +28,7 @@ import { Paper } from "@mui/material";
 
 const Sidebar = () => {
   const [open, setOpen] = React.useState(true);
-
+  const navigate = useNavigate();
   const handleClick = () => {
     setOpen(!open);
   };
@@ -48,7 +48,7 @@ const Sidebar = () => {
           </ListSubheader>
         }
       >
-        <ListItemButton>
+        <ListItemButton onClick={() => navigate(`/`)}>
           <ListItemIcon>
             <GroupIcon />
           </ListItemIcon>
@@ -69,130 +69,6 @@ const Sidebar = () => {
             <ListItemText primary="Chat" />
           </ListItemButton>
         </Link>
-
-        <ListItemButton onClick={handleClick}>
-          <ListItemIcon>
-            <AllInboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="News" />
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-
-        <Paper style={{ maxHeight: 400, overflow: "auto" }}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Brunch this weekend?"
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        Ali Connors
-                      </Typography>
-                      {" — I'll be in your neighborhood doing errands this…"}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Brunch this weekend?"
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        Ali Connors
-                      </Typography>
-                      {" — I'll be in your neighborhood doing errands this…"}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Brunch this weekend?"
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        Ali Connors
-                      </Typography>
-                      {" — I'll be in your neighborhood doing errands this…"}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Brunch this weekend?"
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        Ali Connors
-                      </Typography>
-                      {" — I'll be in your neighborhood doing errands this…"}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Brunch this weekend?"
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        Ali Connors
-                      </Typography>
-                      {" — I'll be in your neighborhood doing errands this…"}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-            </List>
-          </Collapse>
-        </Paper>
       </List>
     </div>
   );

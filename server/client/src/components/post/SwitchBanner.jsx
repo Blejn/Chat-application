@@ -11,7 +11,6 @@ const SwitchBanner = ({ setFeedFriends }) => {
     } else {
       setFeedFriends(true);
     }
-    console.log(selectedValue);
   };
   return (
     <div>

@@ -1,6 +1,7 @@
 import React from "react";
 import ChatIcon from "@mui/icons-material/Chat";
 import "./navbar.css";
+import { IoMdArrowDropdown } from "react-icons/io";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
@@ -22,6 +23,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import { width } from "@mui/system";
+import { useState } from "react";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -61,9 +64,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
+const Dropdown = styled("div")(theme => ({
+  display: "block",
+  position: "absolute",
+  overflow: "auto",
+  right: "20px",
+  transition: "0.9s ease",
+  width: "200px",
+  height: "200px",
+  background: "#d6d6d6",
+  marginTop: "20px",
+}));
+const DropdownElement = styled("div")(theme => ({
+  position: "relative",
+  display: "flex",
+  background: "#757575",
+  margin: "0 10px",
+  height: "25%",
+  marginTop: "10px",
+  cursor: "pointer",
+}));
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
+  const [displayDropdown, setDisplayDropdown] = useState(false);
   const PF = process.env.REACT_APP_ASSETS_FOLDER;
   const [anchorEl, setAnchorEl] = React.useState(null);
   let navigate = useNavigate();
@@ -113,17 +137,15 @@ const Navbar = () => {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={9} color="error">
-                <Link
-                  to={"/chat"}
-                  style={{
-                    textDecoration: "none",
-                    color: "white",
-                  }}
-                >
-                  <ChatIcon sx={{ paddingBottom: "0px" }} />
-                </Link>
-              </Badge>
+              <Link
+                to={"/chat"}
+                style={{
+                  textDecoration: "none",
+                  color: "white",
+                }}
+              >
+                <ChatIcon sx={{ paddingBottom: "0px" }} />
+              </Link>
             </IconButton>
 
             <IconButton
@@ -164,12 +186,100 @@ const Navbar = () => {
               aria-label="show more"
               aria-haspopup="true"
               color="inherit"
+              onClick={() => {
+                setDisplayDropdown(!displayDropdown);
+              }}
             >
               <MoreIcon />
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
+      {displayDropdown ? (
+        <>
+          <IoMdArrowDropdown
+            style={{ color: "#1976d2", position: "absolute", right: "2.5rem" }}
+          />
+
+          <Dropdown>
+            <DropdownElement
+              onClick={() => navigate(`/profile/${user.username}`)}
+            >
+              {" "}
+              {user.avatar ? (
+                <>
+                  <IconButton
+                    size="large"
+                    aria-label="show 17 new notifications"
+                    color="inherit"
+                  >
+                    <Link
+                      to={`/profile/${user.username}`}
+                      style={{ textDecoration: "none", color: "white" }}
+                    >
+                      <Avatar
+                        src={PF + user.avatar}
+                        onClick={handleProfileMenuOpen}
+                        color="inherit"
+                        sx={{
+                          position: "relative",
+                          marginLeft: "auto",
+                          marginRight: "auto",
+                          marginTop: "auto",
+                          alignItems: "center",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          width: 30,
+                          height: 30,
+                        }}
+                      ></Avatar>
+                    </Link>
+                  </IconButton>
+                  <Typography sx={{ marginTop: "10px", color: "white" }}>
+                    My profile
+                  </Typography>
+                </>
+              ) : (
+                <IconButton>
+                  <Avatar></Avatar>
+                </IconButton>
+              )}
+            </DropdownElement>
+            <DropdownElement onClick={() => navigate(`/chat`)}>
+              <IconButton
+                size="large"
+                aria-label="show 17 new notifications"
+                color="inherit"
+              >
+                <Link
+                  to={`/profile/${user.username}`}
+                  style={{ textDecoration: "none", color: "white" }}
+                >
+                  <ChatIcon
+                    color="inherit"
+                    sx={{
+                      position: "relative",
+                      marginLeft: "auto",
+                      marginRight: "auto",
+                      marginTop: "auto",
+                      alignItems: "center",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      width: 30,
+                      height: 30,
+                    }}
+                  />
+                </Link>
+              </IconButton>
+              <Typography sx={{ marginTop: "10px", color: "white" }}>
+                My chat
+              </Typography>
+            </DropdownElement>
+          </Dropdown>
+        </>
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };
